@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:english_words/english_words.dart';
 
 void main() => runApp(TaskApp());
 
@@ -15,11 +14,11 @@ class TaskApp extends StatelessWidget {
 }
 
 class TasksState extends State<Tasks> {
-  final _suggestions = <WordPair>[];
   final _taskList = <String>[];
-  final Set<WordPair> _saved = Set<WordPair>();
+  final Set<String> _saved = Set<String>();
   final _biggerFont = const TextStyle(fontSize: 18.0);
   final yeah = Text("yeah");
+  TextEditingController _inputTaskField = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -43,12 +42,13 @@ class TasksState extends State<Tasks> {
         padding: const EdgeInsets.all(16.0),
         itemBuilder: (context, i) {
           if (i == 0) return TextField(
+            controller: _inputTaskField,
             obscureText: false,
-            onSubmitted: (String value) {
-              print(value);
+            onSubmitted: (String value){
+              setState(() {              
               _taskList.add(value);
-              print(_taskList);
-              value = "";
+              _inputTaskField.text = "";
+              });
             },
             decoration: InputDecoration(
             border: OutlineInputBorder(),
@@ -58,22 +58,20 @@ class TasksState extends State<Tasks> {
           );
           
           if (i.isOdd) return Divider();
-
           final index = i ~/ 2;
-          print("index${index}");
-          print("i${i}");
-          if (index >= _suggestions.length) {
-            _suggestions.addAll(generateWordPairs().take(10));
+
+          if (index >= 1 && index <= _taskList.length) {
+            return _buildRow(_taskList[index-1]);
+          } else {
+            return ListTile(title: Text(""),);
           }
-          return _buildRow(_suggestions[index]);
         });
   }
 
-  Widget _buildRow(WordPair pair) {
-    final bool alreadySaved = _saved.contains(pair);
+  Widget _buildRow(String taskName) {
+    final bool alreadySaved = _saved.contains(taskName);
     return ListTile(
-      title: Text(
-        pair.asPascalCase,
+      title: Text(taskName,
         style: _biggerFont,
       ),
       trailing: Icon(
@@ -83,10 +81,10 @@ class TasksState extends State<Tasks> {
       onTap: () {
         setState(() {
           if (alreadySaved) {
-            _saved.remove(pair);
+            _saved.remove(taskName);
             print(_saved);
           } else {
-            _saved.add(pair);
+            _saved.add(taskName);
             print(_saved);
           }
         }
@@ -95,17 +93,15 @@ class TasksState extends State<Tasks> {
     );
   }
 
-
-
   void _pushSaved() {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (BuildContext context) {
           final Iterable<ListTile> tiles = _saved.map(
-            (WordPair pair) {
+            (String taskName) {
               return ListTile(
                 title: Text(
-                  pair.asPascalCase,
+                  taskName,
                   style: _biggerFont,
                 ),
               );
