@@ -9,12 +9,14 @@ class TaskApp extends StatelessWidget {
     return MaterialApp(
       title: 'Task app',
       home: Tasks(),
+      theme: ThemeData(primaryColor: Colors.grey),
     );
   }
 }
 
 class TasksState extends State<Tasks> {
   final _suggestions = <WordPair>[];
+  final _taskList = <String>[];
   final Set<WordPair> _saved = Set<WordPair>();
   final _biggerFont = const TextStyle(fontSize: 18.0);
   final yeah = Text("yeah");
@@ -40,6 +42,21 @@ class TasksState extends State<Tasks> {
     return ListView.builder(
         padding: const EdgeInsets.all(16.0),
         itemBuilder: (context, i) {
+          if (i == 0) return TextField(
+            obscureText: false,
+            onSubmitted: (String value) {
+              print(value);
+              _taskList.add(value);
+              print(_taskList);
+              value = "";
+            },
+            decoration: InputDecoration(
+            border: OutlineInputBorder(),
+            labelText: '',
+            hintText: 'Add a to-do',
+            ),
+          );
+          
           if (i.isOdd) return Divider();
 
           final index = i ~/ 2;
@@ -60,8 +77,8 @@ class TasksState extends State<Tasks> {
         style: _biggerFont,
       ),
       trailing: Icon(
-        alreadySaved ? Icons.favorite : Icons.favorite_border,
-        color: alreadySaved ? Colors.red: null,
+        alreadySaved ? Icons.check_box : Icons.check_box_outline_blank,
+        color: alreadySaved ? Colors.black: null,
       ),
       onTap: () {
         setState(() {
@@ -102,7 +119,7 @@ class TasksState extends State<Tasks> {
 
           return Scaffold(
             appBar: AppBar(
-              title: Text('Saved Tasks'),
+              title: Text('Completed Tasks'),
               elevation: 0.0,
               backgroundColor: Colors.grey,
             ),
