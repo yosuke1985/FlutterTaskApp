@@ -110,6 +110,16 @@ class TasksState extends State<Tasks> {
                   taskName,
                   style: _biggerFont,
                 ),
+                  trailing: Icon(Icons.check_box,
+                    color: Colors.black,
+                  ),
+                onTap: () {
+                  setState(() {
+                      _saved.remove(taskName);
+                      _taskList.add(taskName);
+                  }
+                  );
+                  }
               );
             },
           );
