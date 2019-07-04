@@ -45,9 +45,15 @@ class TasksState extends State<Tasks> {
             controller: _inputTaskField,
             obscureText: false,
             onSubmitted: (String value){
-              setState(() {              
-              _taskList.add(value);
-              _inputTaskField.text = "";
+              setState(() {   
+                if (_taskList.contains(value) || _saved.contains(value)){
+                  print("カブってます！");
+                  _showDialog();
+                } else {
+                  _taskList.add(value);
+                  _inputTaskField.text = ""; 
+                }   
+
               });
             },
             decoration: InputDecoration(
@@ -82,10 +88,10 @@ class TasksState extends State<Tasks> {
         setState(() {
           if (alreadySaved) {
             _saved.remove(taskName);
-            print(_saved);
+            _taskList.add(taskName);
           } else {
             _saved.add(taskName);
-            print(_saved);
+            _taskList.remove(taskName);
           }
         }
         );
@@ -126,6 +132,27 @@ class TasksState extends State<Tasks> {
       ),
     );
   }
+
+    void _showDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text("すでにそのタスクはあります！"),
+          content: new Text("違う名前にしてください"),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 }
 
 class Tasks extends StatefulWidget {
