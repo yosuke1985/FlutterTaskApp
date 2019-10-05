@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/TaskListView.dart';
-import 'blocs/taskBlocProvider.dart';
+import 'blocs/TaskBlocProvider.dart';
 
 void main() => runApp(TaskApp());
 

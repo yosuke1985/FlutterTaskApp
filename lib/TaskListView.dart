@@ -6,7 +6,8 @@ class TaskListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bloc = TaskBlocProvider.of(context).bloc;
-    
+    // print(bloc.task_name);
+
     return MaterialApp(
       title: 'Task app',
       home: Tasks(),
